@@ -1,6 +1,12 @@
 import React, { useState } from "react";
 
-export default function PizzaBlock({ title, imageUrl, types, sizes, price }) {
+export default function PizzaBlock({
+  title,
+  imageUrl,
+  types = [],
+  sizes = [],
+  price,
+}) {
   const [activeType, setActiveType] = useState(
     types.length === 1 ? types[0] : 0
   );
