@@ -1,7 +1,8 @@
 import React from "react";
 import emptyCartImg from "../assets/img/empty-cart.png";
+import { Link } from "react-router-dom";
 
-export default function CartEmpty() {
+export default function CartEmpty({ scrollToTop }) {
   return (
     <div class="container container--cart">
       <div class="cart cart--empty">
@@ -14,9 +15,9 @@ export default function CartEmpty() {
           Для того, чтобы заказать пиццу, перейди на главную страницу.
         </p>
         <img src={emptyCartImg} alt="Empty cart" />
-        <a href="/" class="button button--black">
+        <Link to="/" class="button button--black" onClick={scrollToTop}>
           <span>Вернуться назад</span>
-        </a>
+        </Link>
       </div>
     </div>
   );

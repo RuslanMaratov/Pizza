@@ -1,15 +1,18 @@
-import React, { useState } from "react";
+import React from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { onChangeSortType, setOpenSort } from "../store/sortSlice";
 
-export default function Sort() {
-  const [open, setOpen] = useState(false);
-  const [activeSort, setActiveSort] = useState(0);
-  const sortList = ["популярности", "цене", "алфавиту"];
-  const sortName = sortList[activeSort];
+const sortList = [
+  { name: "популярности", sortProperty: "rating", id: 0, order: "asc" },
+  { name: "цене(по возр.)", sortProperty: "price", id: 1, order: "asc" },
+  { name: "цене(по убыв.)", sortProperty: "price", id: 2, order: "desc" },
+  { name: "алфавиту", sortProperty: "title", id: 3, order: "asc" },
+];
 
-  const selectedSort = (sortItem, index) => {
-    setActiveSort(index);
-    setOpen(false);
-  };
+export default function Sort({ sortType }) {
+  const openSort = useSelector((state) => state.sort.openSort);
+
+  const dispatch = useDispatch();
 
   return (
     <div className="sort">
@@ -29,23 +32,23 @@ export default function Sort() {
         <b>Сортировка по:</b>
         <span
           onClick={() => {
-            setOpen(!open);
+            dispatch(setOpenSort());
           }}
         >
-          {sortName}
+          {sortType.name}
         </span>
       </div>
-      {open && (
+      {openSort && (
         <div className="sort__popup">
           <ul>
             {sortList.map((sortItem, index) => {
               return (
                 <li
-                  onClick={() => selectedSort(sortItem, index)}
+                  onClick={() => dispatch(onChangeSortType(sortItem))}
                   key={index}
-                  className={activeSort === index ? "active" : ""}
+                  className={sortType.id === index ? "active" : ""}
                 >
-                  {sortItem}
+                  {sortItem.name}
                 </li>
               );
             })}

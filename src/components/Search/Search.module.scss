@@ -1,0 +1,25 @@
+.search {
+  width: 400px;
+  height: 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid #7b7b7b;
+  border-radius: 20px;
+  margin-right: 120px;
+}
+
+.closeIcon {
+  width: 30px;
+  height: 30px;
+  margin-right: 15px;
+  fill: #7b7b7b;
+}
+
+.input {
+  all: unset;
+  width: 80%;
+  border: none;
+  margin-left: 15px;
+  font-size: 24px;
+}
