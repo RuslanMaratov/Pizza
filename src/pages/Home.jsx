@@ -91,11 +91,7 @@ export default function Home() {
       ) : (
         <div className="content__items">
           {item.map((obj) => {
-            return (
-              <Link to={`/pizza/${obj.id}`} key={obj.id}>
-                <PizzaBlock {...obj} />
-              </Link>
-            );
+            return <PizzaBlock key={obj.id} {...obj} />;
           })}
         </div>
       )}
