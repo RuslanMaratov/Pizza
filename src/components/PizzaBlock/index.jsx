@@ -1,18 +1,37 @@
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
+import { addItem } from "../../store/cartSlice";
 
 export default function PizzaBlock({
+  id,
   title,
   imageUrl,
   types = [],
   sizes = [],
   price,
+  count = 1,
 }) {
+  const dispatch = useDispatch();
+
   const [activeType, setActiveType] = useState(
     types.length === 1 ? types[0] : 0
   );
   const [activeSize, setActiveSize] = useState(
     sizes.length === 1 ? types[0] : 0
   );
+
+  const onClickAdd = () => {
+    const item = {
+      id,
+      imageUrl,
+      title,
+      price,
+      type: [activeType],
+      size: [activeSize],
+      count,
+    };
+    dispatch(addItem(item));
+  };
 
   return (
     <div className="pizza-block">
@@ -61,8 +80,7 @@ export default function PizzaBlock({
               fill="white"
             />
           </svg>
-          <span>Добавить</span>
-          <i>2</i>
+          <span onClick={onClickAdd}>Добавить</span>
         </div>
       </div>
     </div>

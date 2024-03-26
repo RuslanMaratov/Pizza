@@ -1,8 +1,12 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { onChangeSortType, setOpenSort } from "../store/sortSlice";
+import {
+  onChangeSortType,
+  setOpenSort,
+  sortSelector,
+} from "../store/sortSlice";
 
-const sortList = [
+export const sortList = [
   { name: "популярности", sortProperty: "rating", id: 0, order: "asc" },
   { name: "цене(по возр.)", sortProperty: "price", id: 1, order: "asc" },
   { name: "цене(по убыв.)", sortProperty: "price", id: 2, order: "desc" },
@@ -10,12 +14,27 @@ const sortList = [
 ];
 
 export default function Sort({ sortType }) {
-  const openSort = useSelector((state) => state.sort.openSort);
+  const { openSort } = useSelector(sortSelector);
 
   const dispatch = useDispatch();
+  const sortRef = useRef();
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (!event.composedPath().includes(sortRef.current)) {
+        dispatch(setOpenSort(false));
+      }
+    };
+
+    document.body.addEventListener("click", handleClickOutside);
+
+    return () => {
+      document.body.removeEventListener("click", handleClickOutside);
+    };
+  }, []);
 
   return (
-    <div className="sort">
+    <div className="sort" ref={sortRef}>
       <div className="sort__label">
         <svg
           width="10"

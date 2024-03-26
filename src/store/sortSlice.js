@@ -11,22 +11,41 @@ export const sortSlice = createSlice({
     },
     openSort: false,
     categoryId: 0,
+    searchValue: "",
   },
   reducers: {
     onChangeSortType: (state, action) => {
       state.sortType = action.payload;
       state.openSort = false;
     },
-    setOpenSort: (state) => {
-      state.openSort = !state.openSort;
+    setOpenSort: (state, action) => {
+      if (action.payload === undefined) {
+        state.openSort = !state.openSort;
+      } else {
+        state.openSort = action.payload;
+      }
     },
     setCategoryId: (state, action) => {
       state.categoryId = action.payload;
     },
+    setFilters: (state, action) => {
+      state.categoryId = Number(action.payload.category);
+      state.sortType = action.payload.sort;
+    },
+    setSearchValue: (state, action) => {
+      state.searchValue = action.payload;
+    },
   },
 });
 
-export const { onChangeSortType, setOpenSort, setCategoryId } =
-  sortSlice.actions;
+export const sortSelector = (state) => state.sort;
+
+export const {
+  onChangeSortType,
+  setOpenSort,
+  setCategoryId,
+  setFilters,
+  setSearchValue,
+} = sortSlice.actions;
 
 export default sortSlice.reducer;

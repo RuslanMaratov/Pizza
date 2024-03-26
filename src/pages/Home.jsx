@@ -1,36 +1,66 @@
-import React, { useContext } from "react";
+import React from "react";
+import { useEffect, useRef } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import qs from "qs";
+import styles from "../components/NotFoundBlock/NotFoundBlock.module.scss";
+
 import Categories from "../components/Categories";
-import Sort from "../components/Sort";
+import Sort, { sortList } from "../components/Sort";
 import PizzaBlock from "../components/PizzaBlock";
 import Skeleton from "../components/PizzaBlock/Skeleton";
-import { useEffect, useState } from "react";
-import { SearchContext } from "../App";
-import { useDispatch, useSelector } from "react-redux";
-import { setCategoryId } from "../store/sortSlice";
-import axios from "axios";
+import { setCategoryId, setFilters, sortSelector } from "../store/sortSlice";
+import { fetchPizzas, pizzasSelector } from "../store/pizzasSlice";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function Home() {
-  const { searchValue } = useContext(SearchContext);
-  const sortType = useSelector((state) => state.sort.sortType);
-  const categoryId = useSelector((state) => state.sort.categoryId);
+  const { searchValue } = useSelector(sortSelector);
+  const { sortType } = useSelector(sortSelector);
+  const { categoryId } = useSelector(sortSelector);
+  const { item } = useSelector(pizzasSelector);
+  const { status } = useSelector(pizzasSelector);
 
-  const [item, setItem] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const isSearch = useRef(false);
+  const isMounted = useRef(false);
 
   const search = searchValue ? `&title=${searchValue}` : "";
 
+  const getPizzas = async () => {
+    dispatch(fetchPizzas({ categoryId, sortType, search }));
+  };
+
   useEffect(() => {
-    setIsLoading(true);
-    axios
-      .get(
-        `https://65e58df6d7f0758a76e6aaad.mockapi.io/items?category=${
-          categoryId === 0 ? "" : categoryId
-        }&sortBy=${sortType.sortProperty}&order=${sortType.order}${search}
-        `
-      )
-      .then((res) => setItem(res.data), setIsLoading(false));
+    if (window.location.search) {
+      const searchString = window.location.search.slice(1);
+      const params = qs.parse(searchString);
+      const sort = sortList.find(
+        (obj) =>
+          obj.sortProperty === params.sortProperty && obj.order === params.order
+      );
+      dispatch(setFilters({ ...params, sort }));
+      isSearch.current = true;
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!isSearch.current) {
+      getPizzas();
+    }
+    isSearch.current = false;
   }, [categoryId, sortType, search]);
+
+  useEffect(() => {
+    if (isMounted.current) {
+      const queryString = qs.stringify({
+        category: categoryId,
+        sortProperty: sortType.sortProperty,
+        order: sortType.order,
+      });
+      navigate(`?${queryString}`);
+    }
+    isMounted.current = true;
+  }, [categoryId, sortType]);
 
   return (
     <div className="container">
@@ -42,15 +72,33 @@ export default function Home() {
         <Sort sortType={sortType} />
       </div>
       <h2 className="content__title">Все пиццы</h2>
-      <div className="content__items">
-        {isLoading
-          ? [...new Array(6)].map((_, index) => {
-              return <Skeleton key={index} />;
-            })
-          : item.map((obj) => {
-              return <PizzaBlock key={obj.id} {...obj} />;
-            })}
-      </div>
+
+      {status === "error" ? (
+        <div className={styles.root}>
+          <h1>
+            <span>😕</span>
+            <br />
+            Ничего не найдено
+          </h1>
+          <p className={styles.description}>К сожалению произошла ошибка!</p>
+        </div>
+      ) : status === "loading" ? (
+        <div className="content__items">
+          {[...new Array(6)].map((_, index) => {
+            return <Skeleton key={index} />;
+          })}
+        </div>
+      ) : (
+        <div className="content__items">
+          {item.map((obj) => {
+            return (
+              <Link to={`/pizza/${obj.id}`} key={obj.id}>
+                <PizzaBlock {...obj} />
+              </Link>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }
