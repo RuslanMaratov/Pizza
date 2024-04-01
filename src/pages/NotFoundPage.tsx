@@ -1,6 +1,8 @@
 import React from "react";
 import NotFoundBlock from "../components/NotFoundBlock/NotFoundBlock";
 
-export default function NotFoundPage() {
+const NotFoundPage = () => {
   return <NotFoundBlock />;
 }
+
+export default NotFoundPage

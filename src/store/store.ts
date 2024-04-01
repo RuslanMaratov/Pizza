@@ -3,10 +3,12 @@ import sort from "./sortSlice";
 import cart from "./cartSlice";
 import pizzas from "./pizzasSlice";
 
-export default configureStore({
+export const store = configureStore({
   reducer: {
     sort,
     cart,
     pizzas,
   },
 });
+
+export type RootState = ReturnType<typeof store.getState>;

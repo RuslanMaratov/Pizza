@@ -2,23 +2,24 @@ import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { addItem } from "../../store/cartSlice";
 import { Link } from "react-router-dom";
+import { PizzaItemType } from "../../store/pizzasSlice";
 
-export default function PizzaBlock({
+const PizzaBlock: React.FC<PizzaItemType> = ({
   id,
   title,
   imageUrl,
-  types = [],
-  sizes = [],
+  type = [],
+  size = [],
   price,
   count = 1,
-}) {
+}) => {
   const dispatch = useDispatch();
 
   const [activeType, setActiveType] = useState(
-    types.length === 1 ? types[0] : 0
+    type.length === 1 ? type[0] : 0
   );
   const [activeSize, setActiveSize] = useState(
-    sizes.length === 1 ? types[0] : 0
+    size.length === 1 ? type[0] : 0
   );
 
   const onClickAdd = () => {
@@ -42,20 +43,20 @@ export default function PizzaBlock({
       </Link>
       <div className="pizza-block__selector">
         <ul>
-          {types.map((typesId) => {
+          {type.map((typeId) => {
             return (
               <li
-                key={typesId}
-                onClick={() => setActiveType(typesId)}
-                className={activeType === typesId ? "active" : ""}
+                key={typeId}
+                onClick={() => setActiveType(typeId)}
+                className={activeType === typeId ? "active" : ""}
               >
-                {typesId === 0 ? "тонкое" : "традиционное"}
+                {typeId === 0 ? "тонкое" : "традиционное"}
               </li>
             );
           })}
         </ul>
         <ul>
-          {sizes.map((size, index) => {
+          {size.map((size, index) => {
             return (
               <li
                 key={index}
@@ -89,3 +90,5 @@ export default function PizzaBlock({
     </div>
   );
 }
+
+export default PizzaBlock

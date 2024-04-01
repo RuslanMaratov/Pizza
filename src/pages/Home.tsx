@@ -8,9 +8,9 @@ import Categories from "../components/Categories";
 import Sort, { sortList } from "../components/Sort";
 import PizzaBlock from "../components/PizzaBlock";
 import Skeleton from "../components/PizzaBlock/Skeleton";
-import { setCategoryId, setFilters, sortSelector } from "../store/sortSlice";
-import { fetchPizzas, pizzasSelector } from "../store/pizzasSlice";
-import { Link, useNavigate } from "react-router-dom";
+import { SortPropertyEnum, setCategoryId, setFilters, sortSelector } from "../store/sortSlice";
+import { PizzasStatusEnum, fetchPizzas, pizzasSelector } from "../store/pizzasSlice";
+import { useNavigate } from "react-router-dom";
 
 export default function Home() {
   const { searchValue } = useSelector(sortSelector);
@@ -27,19 +27,23 @@ export default function Home() {
   const search = searchValue ? `&title=${searchValue}` : "";
 
   const getPizzas = async () => {
+    // @ts-ignore
     dispatch(fetchPizzas({ categoryId, sortType, search }));
   };
 
   useEffect(() => {
     if (window.location.search) {
       const searchString = window.location.search.slice(1);
-      const params = qs.parse(searchString);
+      const params = qs.parse(searchString) as { category: string, sortProperty: SortPropertyEnum, order: "asc" | "desc" };
       const sort = sortList.find(
         (obj) =>
           obj.sortProperty === params.sortProperty && obj.order === params.order
       );
-      dispatch(setFilters({ ...params, sort }));
-      isSearch.current = true;
+      if (sort && params) {
+        const { category, sortProperty, order } = params;
+        dispatch(setFilters({ category, sortProperty, order, sort }));
+        isSearch.current = true;
+      }
     }
   }, []);
 
@@ -69,11 +73,11 @@ export default function Home() {
           onClickCategory={(i) => dispatch(setCategoryId(i))}
           categoryId={categoryId}
         />
-        <Sort sortType={sortType} />
+        <Sort />
       </div>
       <h2 className="content__title">Все пиццы</h2>
 
-      {status === "error" ? (
+      {status === PizzasStatusEnum.ERROR ? (
         <div className={styles.root}>
           <h1>
             <span>😕</span>
@@ -82,7 +86,7 @@ export default function Home() {
           </h1>
           <p className={styles.description}>К сожалению произошла ошибка!</p>
         </div>
-      ) : status === "loading" ? (
+      ) : status === PizzasStatusEnum.LOADING ? (
         <div className="content__items">
           {[...new Array(6)].map((_, index) => {
             return <Skeleton key={index} />;

@@ -4,21 +4,24 @@ import debounce from "lodash.debounce";
 import { useDispatch } from "react-redux";
 import { setSearchValue } from "../../store/sortSlice";
 
-export default function Search() {
+const Search: React.FC = () => {
   const dispatch = useDispatch();
-  const inputRef = useRef(null);
+  const inputRef = useRef<HTMLInputElement>(null);
   const [value, setValue] = useState("");
 
   const onClickClear = () => {
     dispatch(setSearchValue(""));
     setValue("");
-    inputRef.current.focus();
+    inputRef.current?.focus();
   };
+
   const updateSearchValue = useCallback(
-    debounce((str) => dispatch(setSearchValue(str), 500)),
-    []
-  );
-  const onChangeInput = (event) => {
+    debounce((str: string) => {
+      dispatch(setSearchValue(str));
+    }, 300),
+    [],)
+
+  const onChangeInput = (event: React.ChangeEvent<HTMLInputElement>) => {
     setValue(event.target.value);
     updateSearchValue(event.target.value);
   };
@@ -47,3 +50,5 @@ export default function Search() {
     </div>
   );
 }
+
+export default Search;

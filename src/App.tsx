@@ -8,17 +8,14 @@ import NotFoundPage from "./pages/NotFoundPage";
 import FullPizza from "./pages/FullPizza";
 import Layout from "./components/Layout";
 
-function App() {
-  const scrollToTop = () => {
-    window.scrollTo(0, 0);
-  };
+const App: React.FC = () => {
 
   return (
     <Routes>
       <Route path="/" element={<Layout />}>
         <Route path="" element={<Home />} />
-        <Route path="cart" element={<Cart scrollToTop={scrollToTop} />} />
-        <Route path="*" element={<NotFoundPage scrollToTop={scrollToTop} />} />
+        <Route path="cart" element={<Cart />} />
+        <Route path="*" element={<NotFoundPage />} />
         <Route path="pizza/:id" element={<FullPizza />} />
       </Route>
     </Routes>

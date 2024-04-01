@@ -2,7 +2,7 @@ import React from "react";
 import emptyCartImg from "../assets/img/empty-cart.png";
 import { Link } from "react-router-dom";
 
-export default function CartEmpty({ scrollToTop }) {
+const CartEmpty = ({ scrollToTop }: { scrollToTop: () => void }) => {
   return (
     <div className="container container--cart">
       <div className="cart cart--empty">
@@ -20,3 +20,5 @@ export default function CartEmpty({ scrollToTop }) {
     </div>
   );
 }
+
+export default CartEmpty
