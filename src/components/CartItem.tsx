@@ -1,16 +1,7 @@
 import React from 'react'
-import { changeCount, removeItem } from '../store/cartSlice';
+import { changeCount, removeItem } from '../redux/cart/cartSlice';
 import { useDispatch } from 'react-redux';
-
-export type CartItemProps = {
-    id: string,
-    title: string,
-    type: number[],
-    size: number[],
-    count: number,
-    price: number,
-    imageUrl: string
-}
+import { CartItemProps } from '../redux/cart/types';
 
 const pizzasType = ["тонкое", "традиц."];
 const pizzasSize = [26, 30, 40];

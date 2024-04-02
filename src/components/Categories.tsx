@@ -1,10 +1,11 @@
-import React from "react";
+import React, { memo } from "react";
 
 type CategoriesProps = {
   onClickCategory: (i: number) => void, categoryId: number
 }
 
-const Categories: React.FC<CategoriesProps> = ({ onClickCategory, categoryId }) => {
+const Categories: React.FC<CategoriesProps> = memo(({ onClickCategory, categoryId }) => {
+
   const categories = [
     "Все",
     "Мясные",
@@ -34,5 +35,5 @@ const Categories: React.FC<CategoriesProps> = ({ onClickCategory, categoryId }) 
     </div>
   );
 }
-
+)
 export default Categories

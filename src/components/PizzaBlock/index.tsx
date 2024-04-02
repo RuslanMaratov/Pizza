@@ -1,25 +1,25 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import { addItem } from "../../store/cartSlice";
+import { addItem } from "../../redux/cart/cartSlice";
 import { Link } from "react-router-dom";
-import { PizzaItemType } from "../../store/pizzasSlice";
+import { PizzaBlockProps } from "../../redux/pizza/types";
 
-const PizzaBlock: React.FC<PizzaItemType> = ({
+const PizzaBlock: React.FC<PizzaBlockProps> = ({
   id,
   title,
   imageUrl,
-  type = [],
-  size = [],
+  types = [],
+  sizes = [],
   price,
   count = 1,
 }) => {
   const dispatch = useDispatch();
 
   const [activeType, setActiveType] = useState(
-    type.length === 1 ? type[0] : 0
+    types.length === 1 ? types[0] : 0
   );
   const [activeSize, setActiveSize] = useState(
-    size.length === 1 ? type[0] : 0
+    sizes.length === 1 ? types[0] : 0
   );
 
   const onClickAdd = () => {
@@ -43,20 +43,20 @@ const PizzaBlock: React.FC<PizzaItemType> = ({
       </Link>
       <div className="pizza-block__selector">
         <ul>
-          {type.map((typeId) => {
+          {types.map((typesId) => {
             return (
               <li
-                key={typeId}
-                onClick={() => setActiveType(typeId)}
-                className={activeType === typeId ? "active" : ""}
+                key={typesId}
+                onClick={() => setActiveType(typesId)}
+                className={activeType === typesId ? "active" : ""}
               >
-                {typeId === 0 ? "тонкое" : "традиционное"}
+                {typesId === 0 ? "тонкое" : "традиционное"}
               </li>
             );
           })}
         </ul>
         <ul>
-          {size.map((size, index) => {
+          {sizes.map((size, index) => {
             return (
               <li
                 key={index}

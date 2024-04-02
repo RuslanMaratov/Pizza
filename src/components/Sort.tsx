@@ -1,13 +1,16 @@
-import { useEffect, useRef } from "react";
+import React, { memo, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  SortNameEnum,
-  SortPropertyEnum,
-  SortType,
   onChangeSortType,
   setOpenSort,
-  sortSelector,
-} from "../store/sortSlice";
+} from "../redux/sort/sortSlice";
+import {
+  SortNameEnum, SortPropertyEnum,
+  SortProps,
+  SortType
+} from "../redux/sort/types";
+import { sortSelector } from "../redux/sort/selectors";
+
 
 export const sortList: SortType[] = [
   { name: SortNameEnum.RATING, sortProperty: SortPropertyEnum.RATING, id: 0, order: "asc" },
@@ -16,11 +19,10 @@ export const sortList: SortType[] = [
   { name: SortNameEnum.TITLE, sortProperty: SortPropertyEnum.TITLE, id: 3, order: "asc" },
 ];
 
-const Sort = () => {
+const Sort: React.FC<SortProps> = memo(({ value }) => {
   const { openSort } = useSelector(sortSelector);
 
   const dispatch = useDispatch();
-  const { sortType } = useSelector(sortSelector)
   const sortRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -58,7 +60,7 @@ const Sort = () => {
             dispatch(setOpenSort(null));
           }}
         >
-          {sortType.name}
+          {value.name}
         </span>
       </div>
       {
@@ -70,7 +72,7 @@ const Sort = () => {
                   <li
                     onClick={() => dispatch(onChangeSortType(sortItem))}
                     key={index}
-                    className={sortType.id === index ? "active" : ""}
+                    className={value.id === index ? "active" : ""}
                   >
                     {sortItem.name}
                   </li>
@@ -82,6 +84,6 @@ const Sort = () => {
       }
     </div >
   );
-}
+})
 
 export default Sort

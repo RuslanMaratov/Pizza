@@ -1,6 +1,6 @@
-import React from "react";
-import { useEffect, useRef } from "react";
+import React, { useCallback, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import qs from "qs";
 import styles from "../components/NotFoundBlock/NotFoundBlock.module.scss";
 
@@ -8,11 +8,16 @@ import Categories from "../components/Categories";
 import Sort, { sortList } from "../components/Sort";
 import PizzaBlock from "../components/PizzaBlock";
 import Skeleton from "../components/PizzaBlock/Skeleton";
-import { SortPropertyEnum, setCategoryId, setFilters, sortSelector } from "../store/sortSlice";
-import { PizzasStatusEnum, fetchPizzas, pizzasSelector } from "../store/pizzasSlice";
-import { useNavigate } from "react-router-dom";
 
-export default function Home() {
+import { setCategoryId, setFilters } from "../redux/sort/sortSlice";
+import { SortPropertyEnum } from "../redux/sort/types";
+import { sortSelector } from "../redux/sort/selectors";
+
+import { fetchPizzas } from "../redux/pizza/pizzasSlice";
+import { PizzasStatusEnum } from "../redux/pizza/types";
+import { pizzasSelector } from "../redux/pizza/selectors";
+
+const Home: React.FC = () => {
   const { searchValue } = useSelector(sortSelector);
   const { sortType } = useSelector(sortSelector);
   const { categoryId } = useSelector(sortSelector);
@@ -66,14 +71,18 @@ export default function Home() {
     isMounted.current = true;
   }, [categoryId, sortType]);
 
+  const onClickCategory = useCallback((i: number) => {
+    dispatch(setCategoryId(i))
+  }, [])
+
   return (
     <div className="container">
       <div className="content__top">
         <Categories
-          onClickCategory={(i) => dispatch(setCategoryId(i))}
+          onClickCategory={onClickCategory}
           categoryId={categoryId}
         />
-        <Sort />
+        <Sort value={sortType} />
       </div>
       <h2 className="content__title">Все пиццы</h2>
 
@@ -102,3 +111,5 @@ export default function Home() {
     </div>
   );
 }
+
+export default Home
