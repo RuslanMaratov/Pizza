@@ -1,4 +1,4 @@
-@import '../variables';
+@import "../variables";
 
 .pizza-block {
   width: 280px;
@@ -24,6 +24,10 @@
     font-weight: 900;
     letter-spacing: 1%;
     margin-bottom: 20px;
+    height: 55px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 
   &__selector {
